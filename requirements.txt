@@ -1,0 +1,20 @@
+# UniMarket — Dependencias del Backend
+# Python >= 3.11
+
+# API Framework
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+
+# Validación de datos
+pydantic==2.9.2
+
+# Cómputo científico (MOTOA — equilibrio de carga, std RAM)
+numpy==2.1.1
+
+# Testing
+pytest==8.3.3
+pytest-asyncio==0.24.0
+httpx==0.27.2        # Cliente HTTP para tests de integración
+
+# Utilidades
+python-multipart==0.0.12   # Para uploads en FastAPI
