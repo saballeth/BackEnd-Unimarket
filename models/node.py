@@ -25,17 +25,17 @@ class NetworkNode:
       - ram_used_gbit -> RAM actualmente en uso
       - active_power_w -> Potencia activa (Watts)
     """
-    node_type = NodeType
-    cpu_ghz = float # f_s
-    ram_total_gbit = float # M_s
-    ram_used_gbit = float
-    bandwidth_mhz = float
-    active_power_w = float
-    idle_power_w = float
-    distance_m = float # Distancia al gNB (0 para Cloud -> usa fibra)
+    node_type: NodeType
+    cpu_ghz: float # f_s
+    ram_total_gbit: float # M_s
+    ram_used_gbit: float
+    bandwidth_mhz: float
+    active_power_w: float
+    idle_power_w: float
+    distance_m: float # Distancia al gNB (0 para Cloud -> usa fibra)
 
-    node_id:     str = field(default_factory=lambda: str(uuid.uuid4()))
-    task_queue:  List[str] = field(default_factory=list)
+    node_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    task_queue: List[str] = field(default_factory=list)
 
     # Propiedades derivadas
     @property

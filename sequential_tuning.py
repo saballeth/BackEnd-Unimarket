@@ -22,12 +22,12 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class TuningResult:
-    converged:     bool
-    iterations:    int
-    final_cost:    float
-    initial_cost:  float
-    cost_history:  List[float]  = field(default_factory=list)
-    reassignments: int          = 0
+    converged: bool
+    iterations: int
+    final_cost: float
+    initial_cost: float
+    cost_history: List[float]  = field(default_factory=list)
+    reassignments: int = 0
 
     @property
     def improvement_pct(self) -> float:
@@ -51,7 +51,7 @@ class SequentialTuner:
     CONVERGENCE_DELTA = 1e-4
 
     def __init__(self, motoa: MOTOAEngine, max_iterations: int = 100):
-        self.motoa          = motoa
+        self.motoa = motoa
         self.max_iterations = max_iterations
 
     def optimize(
@@ -60,8 +60,8 @@ class SequentialTuner:
         nodes: List[NetworkNode],
     ) -> TuningResult:
         """
-        Ejecuta el ajuste secuencial sobre las tareas activas.
-        Modifica in-place las tareas y los nodos.
+        Se ejecuta el ajuste secuencial sobre las tareas activas.
+        Modifica in-place las tareas y los nodos
         """
         active = [t for t in tasks if t.status == TaskStatus.PROCESSING]
         if not active:
@@ -71,7 +71,7 @@ class SequentialTuner:
 
         initial_cost = self._system_cost(active, nodes)
         current_cost = initial_cost
-        history      = [current_cost]
+        history = [current_cost]
         reassignments = 0
 
         logger.info(
@@ -107,9 +107,9 @@ class SequentialTuner:
                     iteration, current_cost
                 )
                 return TuningResult(
-                    converged    = True,
-                    iterations   = iteration,
-                    final_cost   = current_cost,
+                    converged = True,
+                    iterations = iteration,
+                    final_cost = current_cost,
                     initial_cost = initial_cost,
                     cost_history = history,
                     reassignments= reassignments,
@@ -117,12 +117,12 @@ class SequentialTuner:
 
         logger.warning("SeqTuning: máx. iteraciones alcanzadas (%d)", self.max_iterations)
         return TuningResult(
-            converged    = False,
-            iterations   = self.max_iterations,
-            final_cost   = current_cost,
+            converged = False,
+            iterations = self.max_iterations,
+            final_cost = current_cost,
             initial_cost = initial_cost,
             cost_history = history,
-            reassignments= reassignments,
+            reassignments = reassignments,
         )
 
     # ──────────────────────────────────────────────────────────────────────────
@@ -138,8 +138,8 @@ class SequentialTuner:
             (ganancia, nodo_candidato, decision)
         """
         current_cost = self._task_cost(task, nodes)
-        best_gain    = 0.0
-        best_node    = None
+        best_gain = 0.0
+        best_node = None
         best_decision = None
 
         for decision in [OffloadingDecision.EDGE, OffloadingDecision.CLOUD]:
@@ -154,11 +154,11 @@ class SequentialTuner:
                     continue
 
                 sim_cost = self._simulate_cost(task, node)
-                gain     = current_cost - sim_cost
+                gain = current_cost - sim_cost
 
                 if gain > best_gain + EPSILON_TIE:
-                    best_gain     = gain
-                    best_node     = node
+                    best_gain = gain
+                    best_node = node
                     best_decision = decision
 
         return best_gain, best_node, best_decision
@@ -192,10 +192,10 @@ class SequentialTuner:
 
     def _reassign(
         self,
-        task:         Task,
-        new_node:     NetworkNode,
+        task: Task,
+        new_node: NetworkNode,
         new_decision: OffloadingDecision,
-        nodes:        List[NetworkNode],
+        nodes: List[NetworkNode],
     ) -> None:
         """Reasigna la tarea: libera recursos en el nodo anterior y asigna en el nuevo."""
         ram = task.input_size_bits / 8e9  # bits → Gbit
@@ -212,9 +212,9 @@ class SequentialTuner:
 
         # Actualizar tarea
         task.offloading_decision = new_decision
-        task.assigned_server_id  = new_node.node_id
+        task.assigned_server_id = new_node.node_id
 
         # Recalcular métricas
         lat = self.motoa._calc_latency(task, new_node)
-        task.tau_total_ms   = lat.total_ms
+        task.tau_total_ms = lat.total_ms
         task.energy_total_j = self.motoa._calc_energy(task, new_node)

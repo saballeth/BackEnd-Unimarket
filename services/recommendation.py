@@ -22,25 +22,24 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class RankedProduct:
-    product:         Product
+    product: Product
     relevance_score: float
-    pareto_rank:     int
+    pareto_rank: int
     is_pareto_front: bool
 
     def to_dict(self) -> dict:
         p = self.product
         return {
-            "product_id":     p.product_id,
-            "name":           p.name,
-            "category":       p.category,
-            "price":          p.price,
-            "stock":          p.stock,
-            "status":         p.status.value,
-            "relevance":      round(self.relevance_score, 4),
-            "pareto_rank":    self.pareto_rank,
-            "pareto_front":   self.is_pareto_front,
+            "product_id": p.product_id,
+            "name": p.name,
+            "category": p.category,
+            "price": p.price,
+            "stock": p.stock,
+            "status": p.status.value,
+            "relevance": round(self.relevance_score, 4),
+            "pareto_rank": self.pareto_rank,
+            "pareto_front": self.is_pareto_front,
         }
-
 
 class RecommendationService:
     """
@@ -60,7 +59,7 @@ class RecommendationService:
 
     def get_recommendations(
         self,
-        user:     Optional[UserProfile],
+        user: Optional[UserProfile],
         products: List[Product],
         max_results: int = 10,
     ) -> List[RankedProduct]:
@@ -72,7 +71,6 @@ class RecommendationService:
         """
         if not products:
             return []
-
         # Paso 1: Score de relevancia
         scored = self._score_relevance(products, user)
 
@@ -94,7 +92,7 @@ class RecommendationService:
     def _score_relevance(
         self,
         products: List[Product],
-        user:     Optional[UserProfile],
+        user: Optional[UserProfile],
     ) -> List[Product]:
         """
         Calcula relevance_score para cada producto según las preferencias del usuario.
@@ -122,15 +120,14 @@ class RecommendationService:
             p.load_latency_ms = max(5.0, 100.0 - p.relevance_score * 80.0)
 
         return products
-
     # Paso 2 – Dominancia de Pareto
     def _build_pareto_ranking(self, products: List[Product]) -> List[RankedProduct]:
         """
         Construye el ranking por capas de Pareto (non-dominated sorting).
         Atributos evaluados:
-          - relevance_score   → maximizar
-          - price             → minimizar (se invierte el signo)
-          - load_latency_ms   → minimizar (se invierte el signo)
+          - relevance_score → maximizar
+          - price → minimizar (se invierte el signo)
+          - load_latency_ms → minimizar (se invierte el signo)
         """
         # Convertimos a minimización: todos los objetivos se minimizan
         def objectives(p: Product) -> Dict[str, float]:
@@ -139,10 +136,9 @@ class RecommendationService:
                 "price":          p.price,              # minimizar
                 "latency":        p.load_latency_ms,    # minimizar
             }
-
-        remaining    = list(products)
-        ranked       = []
-        pareto_rank  = 1
+        remaining = list(products)
+        ranked = []
+        pareto_rank = 1
 
         while remaining:
             front = self._pareto_front(remaining, objectives)
@@ -161,7 +157,7 @@ class RecommendationService:
 
     def _pareto_front(
         self,
-        products:   List[Product],
+        products: List[Product],
         objectives,
     ) -> List[Product]:
         """
@@ -202,12 +198,12 @@ class RecommendationService:
         Ejemplo con ratio=0.4 y 10 slots: 4 Nuevos + 6 Regulares,
         intercalados posicionalmente.
         """
-        news     = [r for r in ranked if r.product.status == ProductStatus.NEW]
+        news = [r for r in ranked if r.product.status == ProductStatus.NEW]
         regulars = [r for r in ranked if r.product.status == ProductStatus.REGULAR]
 
         result = []
         ni, ri = 0, 0
-        total  = len(news) + len(regulars)
+        total = len(news) + len(regulars)
 
         for slot in range(total):
             use_new = (
@@ -226,10 +222,10 @@ class RecommendationService:
     # Búsqueda con filtro Tabú (motor de búsqueda)
     def search(
         self,
-        products:  List[Product],
-        query:     str,
-        category:  Optional[str],
-        user:      Optional[UserProfile],
+        products: List[Product],
+        query: str,
+        category: Optional[str],
+        user: Optional[UserProfile],
         max_results: int = 10,
         tabu_list: Optional[List[str]] = None,
     ) -> List[RankedProduct]:
@@ -238,7 +234,7 @@ class RecommendationService:
         diversidad de resultados y evitar mostrar siempre los mismos
         """
         tabu = set(tabu_list or [])
-        q    = query.lower().strip()
+        q = query.lower().strip()
 
         candidates = [
             p for p in products

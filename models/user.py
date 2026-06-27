@@ -7,9 +7,8 @@ from enum import Enum
 from typing import Dict, List
 import uuid
 
-
 class UserRole(Enum):
-    BUYER        = "buyer"
+    BUYER = "buyer"
     ENTREPRENEUR = "entrepreneur"
 
 
@@ -19,13 +18,13 @@ class UserProfile:
     Perfil de usuario con preferencias e historial de transacciones.
     Roles: Comprador / Emprendedor.
     """
-    role:  UserRole
-    name:  str
+    role: UserRole
+    name: str
     email: str
 
-    user_id:              str             = field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str = field(default_factory=lambda: str(uuid.uuid4()))
     category_preferences: Dict[str, float] = field(default_factory=dict)
-    transaction_history:  List[str]        = field(default_factory=list)
+    transaction_history: List[str] = field(default_factory=list)
 
     # Umbral de seguridad de batería del dispositivo móvil
     battery_threshold_pct: float = 20.0
