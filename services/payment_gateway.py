@@ -19,7 +19,6 @@ from models.user import UserProfile
 
 logger = logging.getLogger(__name__)
 
-
 class PaymentStatus(Enum):
     INITIATED = "initiated"
     MOTOA_CHECK = "motoa_viability_check"
