@@ -392,9 +392,9 @@ class MOTOAEngine:
             tau_prop = (node.distance_m / LIGHT_SPEED_MPS) * 1e3 * 2
 
         return LatencyBreakdown(
-            t_uplink_ms = tau_ul,
-            t_downlink_ms = tau_dl,
-            t_comp_ms = tau_comp,
+            tau_uplink_ms = tau_ul,
+            tau_downlink_ms = tau_dl,
+            tau_comp_ms = tau_comp,
             tau_queue_ms = tau_queue,
             tau_ram_wait_ms = tau_ram,
             tau_prop_ms = tau_prop,

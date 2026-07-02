@@ -19,7 +19,7 @@ from models.node import NetworkNode
 from models.product import Product, ProductStatus
 from models.task import OffloadingDecision, Task, TaskStatus
 from models.user import UserProfile
-from recommendation import RecommendationService, RankedProduct
+from services.recommendation import RecommendationService, RankedProduct
 
 
 @dataclass

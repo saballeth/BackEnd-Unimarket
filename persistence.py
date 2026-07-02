@@ -143,7 +143,7 @@ def task_from_payload(payload: dict):
 def payment_to_payload(record) -> dict:
     return _encode_value(record)
 def payment_from_payload(payload: dict):
-    from payment_gateway import PaymentRecord, PaymentStatus
+    from services.payment_gateway import PaymentRecord, PaymentStatus
 
     data = dict(payload)
     data["status"] = PaymentStatus(data["status"])
